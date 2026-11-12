@@ -8,97 +8,133 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#d9dcdb;--ink:#121314;--blue:#2340ff;--paper:#f6f6f3;--mid:#6f7473}
+:root{--b:#39009e;--w:#fff;--k:#000;--m:rgba(255,255,255,.62)}
 *{margin:0;padding:0;box-sizing:border-box}
 html.lenis{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}
-body{background:var(--bg);color:var(--ink);font-family:'Bricolage Grotesque',system-ui,sans-serif;overflow-x:hidden;line-height:1.4}
+body{background:var(--k);color:var(--w);font-family:'Bricolage Grotesque',system-ui,sans-serif;overflow-x:hidden;line-height:1.4}
 a{color:inherit;text-decoration:none}
-:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
-nav{position:fixed;inset:0 0 auto;display:flex;justify-content:space-between;padding:1.2rem 2rem;z-index:50;color:#fff;mix-blend-mode:difference;font-weight:500}
+:focus-visible{outline:2px solid var(--w);outline-offset:4px}
+/* One continuous canvas: a blue glow and film grain sit behind every section, so nothing is cut into blocks */
+.glow{position:fixed;inset:-25%;z-index:-1;pointer-events:none;filter:blur(50px);opacity:.75;
+ background:radial-gradient(38% 38% at 72% 28%,var(--b),transparent 70%),radial-gradient(34% 34% at 18% 82%,var(--b),transparent 70%)}
+.grain{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.08;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+nav{position:fixed;inset:0 0 auto;display:flex;justify-content:space-between;padding:1.2rem 2rem;z-index:50;font-weight:500}
 nav div{display:flex;gap:1.6rem}
-.ring{position:fixed;top:0;left:0;width:34px;height:34px;margin:-17px 0 0 -17px;border:1.5px solid var(--blue);border-radius:50%;pointer-events:none;z-index:99}
+.ring{position:fixed;top:0;left:0;width:28px;height:28px;margin:-14px 0 0 -14px;background:var(--b);border:1.5px solid var(--w);border-radius:50%;pointer-events:none;z-index:99}
 @media(pointer:coarse){.ring{display:none}}
+.w{display:inline-block;overflow:hidden;vertical-align:top}.w>i{display:inline-block;font-style:normal}
 
-/* Hero: drafting grid + dimension line */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:6rem 2rem 2.5rem;overflow:hidden;
- background-image:linear-gradient(#0001 1px,transparent 1px),linear-gradient(90deg,#0001 1px,transparent 1px);background-size:48px 48px}
+/* Hero */
+.hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:6rem 2rem 2.5rem;overflow:hidden}
 .hero h1{font-size:clamp(4.5rem,25vw,28rem);font-weight:800;letter-spacing:-.055em;line-height:.82;display:flex;transform-origin:left bottom;font-variation-settings:'opsz' 96}
 .hero h1 span{display:inline-block;overflow:hidden;padding-bottom:.08em}
 .hero h1 b{display:inline-block;font-weight:inherit}
-.dim{display:flex;align-items:center;gap:1rem;height:.9rem;border-inline:1px solid var(--blue);color:var(--blue);margin:1.5rem 0 1rem;font-weight:500}
-.dim i{flex:1;height:1px;background:var(--blue);transform-origin:left}
-.meta{max-width:34ch;color:var(--mid)}
+.dim{display:flex;align-items:center;gap:1rem;height:.9rem;border-inline:1px solid #fff8;margin:1.5rem 0 1rem;font-weight:500}
+.dim i{flex:1;height:1px;background:#fff8;transform-origin:left}
+.meta{max-width:34ch;color:var(--m)}
+h2{font-size:clamp(2rem,5vw,4.5rem);font-weight:700;letter-spacing:-.03em;line-height:1}
 
-/* Work */
-.work{padding:10vh 2rem}
-.work h2,.process h2,.viewer h2{font-size:clamp(2rem,5vw,4.5rem);font-weight:700;letter-spacing:-.03em;line-height:1;margin-bottom:3rem}
-.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:4rem 2rem}
-.card{display:block}
-.card:nth-child(1){grid-column:1/9}.card:nth-child(2){grid-column:9/13;align-self:end}
-.card:nth-child(3){grid-column:3/10}
-.media{position:relative;overflow:hidden;aspect-ratio:4/3;background:linear-gradient(135deg,#bfc3c2,#a7acab)}
-.card:nth-child(2) .media{aspect-ratio:3/4}
-.media i{position:absolute;left:0;right:0;top:-10%;height:120%}
-.media i::before,.media i::after{content:"";position:absolute;inset:0;background:center/cover no-repeat;transition:opacity .5s}
-.media i::before{background-image:var(--a)}
-.media i::after{background-image:var(--b);opacity:0}
-.card:hover .media i::after,.card:focus-visible .media i::after{opacity:1}
-.card h3{font-size:1.5rem;font-weight:600;margin-top:1rem;letter-spacing:-.02em}
-.card p{color:var(--mid);max-width:44ch}
+/* Selected work: a portrait foldable that opens top to bottom */
+.fold{height:100vh;height:100svh;position:relative;display:grid;place-items:center;overflow:hidden}
+.fold h2{position:absolute;top:9vh;left:2rem;z-index:7}
+.stage{position:relative;z-index:5;perspective:2000px;display:grid;place-items:center}
+.tilt,.phone{transform-style:preserve-3d}
+.phone{position:relative;width:min(80vw,360px);height:min(70vh,720px);height:min(70svh,720px)}
+.phone::before,.phone::after{content:"";position:absolute;right:-13px;width:4px;background:#2a2a2a;border-radius:2px;opacity:var(--bt,0);transform:translateX(calc((1 - var(--bt,0)) * -9px))}
+@media(prefers-reduced-motion:reduce){.phone{--bt:1}}
+.phone::before{top:26%;height:64px}.phone::after{top:40%;height:34px}
+.B,.face{box-shadow:0 0 0 6px #111,0 0 0 7px #fff5,0 30px 90px #39009ecc}
+.B{position:absolute;left:0;bottom:0;width:100%;height:50%;border-radius:0 0 36px 36px;background:var(--b);overflow:hidden;transform:translateZ(-1px)}
+.B::before{content:"";position:absolute;top:0;left:0;right:0;height:26px;background:linear-gradient(#0009,transparent);z-index:2}
+.T{position:absolute;left:0;top:0;width:100%;height:50%;transform-origin:50% 100%;transform-style:preserve-3d}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden;border-radius:36px 36px 0 0;background:#000}
+.face:not(.back)::after{content:"";position:absolute;left:0;right:0;bottom:0;height:26px;background:linear-gradient(transparent,#0009);z-index:2}
+.back{transform:rotateX(180deg);border-radius:0 0 36px 36px}
+.cam{position:absolute;top:14px;left:50%;width:10px;height:10px;margin-left:-5px;background:#000;border-radius:50%;box-shadow:0 0 0 2px #222;z-index:3}
+.sb{position:absolute;top:13px;left:26px;right:26px;display:flex;justify-content:space-between;align-items:center;font-size:.75rem;font-weight:600;z-index:3;text-shadow:0 1px 6px #000a}
+.bat{width:22px;height:10px;border:1.5px solid #fff;border-radius:3px;position:relative}
+.bat::after{content:"";position:absolute;inset:1.5px 5px 1.5px 1.5px;background:#fff;border-radius:1px}
+.lock,.call{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;padding:1rem;text-align:center}
+.lock b{font-size:clamp(3rem,16vw,5rem);font-weight:800;letter-spacing:-.05em;line-height:1}
+.lock p,.call p{color:var(--m)}
+.call{opacity:0;pointer-events:none}
+.call h3{font-size:2.2rem;letter-spacing:-.03em}
+.call a{margin-top:.8rem;background:var(--b);padding:.7rem 2rem;border-radius:99px;font-weight:600}
+.pl,.pi{position:absolute;inset:0}
+.pl:not(:first-child),.pi:not(:first-child){visibility:hidden}
+.pl{padding:1.4rem 1.4rem 3.4rem;display:flex;flex-direction:column;justify-content:flex-end;gap:.5rem}
+.pl h3{font-size:clamp(1.6rem,6vw,2.3rem);font-weight:700;letter-spacing:-.03em;line-height:1}
+.pl p{max-width:28ch;color:#fffc;font-size:.95rem}
+.dots{position:absolute;bottom:1.3rem;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:3}
+.dot{width:8px;height:8px;border-radius:8px;background:rgba(255,255,255,.4)}
+.pi{background:linear-gradient(160deg,var(--b),#000);overflow:hidden}
+.pi i{position:absolute;inset:-14% 0}
+.pi i::before,.pi i::after{content:"";position:absolute;inset:0;background:center/cover no-repeat}
+.pi i::before{background-image:var(--a)}
+.pi i::after{background-image:var(--b2);opacity:var(--s,0)}
 
-/* Process: pinned horizontal scroll */
-.process{height:100vh;overflow:hidden;display:flex;flex-direction:column;justify-content:center;background:var(--paper)}
-.process h2{padding:0 2rem;margin-bottom:2rem}
-.track{display:flex;gap:2rem;padding:0 2rem;width:max-content}
-.step{width:min(70vw,34rem);border-top:2px solid var(--ink);padding-top:1rem}
-.step b{font-size:clamp(4rem,12vw,9rem);font-weight:800;letter-spacing:-.06em;line-height:.9;color:var(--blue);display:block}
-.step h3{font-size:1.6rem;margin:.5rem 0}
-.step p{color:var(--mid)}
+/* Process: pinned horizontal scroll, no panels */
+.process{height:100vh;height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.process h2{padding:0 2rem;margin-bottom:2.5rem}
+.track{display:flex;gap:4rem;padding:0 2rem;width:max-content}
+.step{width:min(70vw,32rem)}
+.step b{font-size:clamp(5rem,14vw,10rem);font-weight:800;letter-spacing:-.06em;line-height:.9;color:var(--b);-webkit-text-stroke:1.5px var(--w);display:block}
+.step h3{font-size:1.6rem;margin:.5rem 0}.step p{color:var(--m)}
 
-/* 3D viewer */
-.viewer{background:var(--ink);color:var(--paper);padding:10vh 2rem}
-model-viewer{width:100%;height:75vh;--poster-color:transparent;background:radial-gradient(circle at 50% 40%,#2a2c2e,#121314 70%)}
-.viewer p{color:#9da2a1;margin-top:1rem}
-
+/* 3D */
+.viewer{padding:12vh 2rem}
+.viewer h2{margin-bottom:2rem}
+model-viewer{width:100%;height:75vh;background:none;--poster-color:transparent}
+.viewer p{color:var(--m)}
 footer{padding:12vh 2rem 3rem}
-footer a{font-size:clamp(2rem,8vw,8rem);font-weight:800;letter-spacing:-.05em;line-height:1;word-break:break-all;display:inline-block;border-bottom:.06em solid var(--blue)}
-footer p{margin-top:2rem;color:var(--mid)}
-@media(max-width:700px){.card:nth-child(n){grid-column:1/13}.nav div{gap:1rem}}
+footer a{font-size:clamp(2rem,8vw,8rem);font-weight:800;letter-spacing:-.05em;line-height:1;word-break:break-all;display:inline-block;border-bottom:.06em solid var(--w)}
+footer p{margin-top:2rem;color:var(--m)}
+@media(max-width:700px){.pl p{font-size:.85rem}}
 </style>
 </head>
 <body>
-<div class="ring"></div>
+<div class="glow"></div><div class="grain"></div><div class="ring"></div>
 <nav><a href="#top">Viroz</a><div><a href="#work">Work</a><a href="#process">Process</a><a href="#viewer">3D</a><a href="#contact">Contact</a></div></nav>
 
 <header class="hero" id="top">
   <h1>Viroz</h1>
   <div class="dim"><i></i><span>Industrial designer</span><i></i></div>
-  <!-- EDIT: one honest sentence about what you design and what you care about -->
-  <p class="meta">I design physical products, from first sketch to a printed prototype.</p>
+  <!-- EDIT: one honest sentence about what you design -->
+  <p class="meta rv">I design physical products, from first sketch to a printed prototype.</p>
 </header>
 
 <main>
-<section class="work" id="work">
+<section class="fold" id="work">
   <h2>Selected work</h2>
-  <div class="grid">
-    <!-- EDIT: for each project, put two images in /assets and change --a (default) and --b (shown on hover). Use .webp. -->
-    <a class="card" href="#">
-      <div class="media"><i style="--a:url(assets/project1-a.webp);--b:url(assets/project1-b.webp)"></i></div>
-      <h3>Project one</h3><p>One line on the problem you solved and what you made.</p>
-    </a>
-    <a class="card" href="#">
-      <div class="media"><i style="--a:url(assets/project2-a.webp);--b:url(assets/project2-b.webp)"></i></div>
-      <h3>Project two</h3><p>One line on the problem you solved and what you made.</p>
-    </a>
-    <a class="card" href="#">
-      <div class="media"><i style="--a:url(assets/project3-a.webp);--b:url(assets/project3-b.webp)"></i></div>
-      <h3>Project three</h3><p>One line on the problem you solved and what you made.</p>
-    </a>
-  </div>
+  <div class="stage"><div class="tilt"><div class="phone">
+    <!-- Bottom screen: project text -->
+    <div class="B">
+      <!-- EDIT: project titles and one-liners -->
+      <div class="pl"><h3>Project one</h3><p>One line on the problem you solved and what you made.</p></div>
+      <div class="pl"><h3>Project two</h3><p>One line on the problem you solved and what you made.</p></div>
+      <div class="pl"><h3>Project three</h3><p>One line on the problem you solved and what you made.</p></div>
+      <div class="dots"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div>
+    </div>
+    <div class="T">
+      <!-- Top screen: project images. --a is the first image, --b2 fades in as you keep scrolling -->
+      <div class="face">
+        <span class="cam"></span><div class="sb"><span>9:41</span><i class="bat"></i></div>
+        <div class="pi"><i style="--a:url(assets/project1-a.webp);--b2:url(assets/project1-b.webp)"></i></div>
+        <div class="pi"><i style="--a:url(assets/project2-a.webp);--b2:url(assets/project2-b.webp)"></i></div>
+        <div class="pi"><i style="--a:url(assets/project3-a.webp);--b2:url(assets/project3-b.webp)"></i></div>
+      </div>
+      <!-- Cover screen: lock screen first, incoming call at the end -->
+      <div class="face back">
+        <div class="lock"><b>9:41</b><p>Viroz</p><p>Keep scrolling to unfold</p></div>
+        <div class="call"><p>Incoming call</p><h3>Viroz</h3><a href="mailto:you@example.com">Answer</a></div>
+      </div>
+    </div>
+  </div></div></div>
 </section>
 
 <section class="process" id="process">
-  <h2>How I work</h2>
+  <h2 class="rv">How I work</h2>
   <div class="track">
     <div class="step"><b>1</b><h3>Sketch</h3><p>Fast thumbnails to find the form before touching CAD.</p></div>
     <div class="step"><b>2</b><h3>Model</h3><p>CAD to resolve proportions, parts, and tolerances.</p></div>
@@ -108,17 +144,17 @@ footer p{margin-top:2rem;color:var(--mid)}
 </section>
 
 <section class="viewer" id="viewer">
-  <h2>Pick one up</h2>
-  <!-- EDIT: replace src with your own file, e.g. assets/my-product.glb (keep it under 5 MB) -->
-  <model-viewer src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" alt="3D model you can rotate" camera-controls auto-rotate shadow-intensity="1" environment-image="neutral"></model-viewer>
-  <p>Drag to rotate, scroll or pinch to zoom.</p>
+  <h2 class="rv">Pick one up</h2>
+  <!-- EDIT: replace src with your own file, e.g. assets/my-product.glb (under 5 MB) -->
+  <model-viewer src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" alt="3D model you can rotate" camera-controls disable-zoom auto-rotate shadow-intensity="1" environment-image="neutral"></model-viewer>
+  <p>Drag to rotate.</p>
 </section>
 </main>
 
 <footer id="contact">
-  <!-- EDIT: your email -->
+  <!-- EDIT: your email (also change it in the "Answer" button above) -->
   <a href="mailto:you@example.com">you@example.com</a>
-  <p>Open to internships and freelance projects.</p>
+  <p class="rv">Open to internships and freelance projects.</p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
@@ -127,40 +163,90 @@ footer p{margin-top:2rem;color:var(--mid)}
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 <script>
 if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
+  const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
   gsap.registerPlugin(ScrollTrigger);
-  const lenis=new Lenis();
-  lenis.on('scroll',ScrollTrigger.update);
-  gsap.ticker.add(t=>lenis.raf(t*1000));
-  gsap.ticker.lagSmoothing(0);
-  document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{
-    const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();lenis.scrollTo(t)}}));
+  const touch=matchMedia('(pointer:coarse)').matches;
+  ScrollTrigger.config({ignoreMobileResize:true});   // don't recalculate every time the phone's address bar slides in or out
+  if(touch){
+    // Phones: ScrollTrigger steadies fast flicks so pinned sections don't shoot past
+    const ns=ScrollTrigger.normalizeScroll({allowNestedScroll:true,type:'touch'});
+    const mv=$('model-viewer');   // let the 3D model take its own drags
+    mv.addEventListener('touchstart',()=>ns&&ns.disable(),{passive:true});
+    ['touchend','touchcancel'].forEach(ev=>mv.addEventListener(ev,()=>ns&&ns.enable(),{passive:true}));
+  }else{
+    // Desktop: smooth inertial scrolling
+    const lenis=new Lenis({duration:1.5});
+    lenis.on('scroll',ScrollTrigger.update);
+    gsap.ticker.add(t=>lenis.raf(t*1000));gsap.ticker.lagSmoothing(0);
+    $$('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=$(a.getAttribute('href'));if(t){e.preventDefault();lenis.scrollTo(t)}}));
+  }
 
-  // One orchestrated moment: letters rise, dimension line draws
-  const h=document.querySelector('.hero h1');
-  h.setAttribute('aria-label',h.textContent);
+  // Hero: letters rise, dimension line draws, then the name scales away on scroll
+  const h=$('.hero h1');h.setAttribute('aria-label',h.textContent);
   h.innerHTML=[...h.textContent].map(c=>`<span aria-hidden="true"><b>${c}</b></span>`).join('');
-  gsap.timeline()
-    .from('.hero h1 b',{yPercent:110,duration:1.1,stagger:.08,ease:'power4.out'})
-    .from('.dim i',{scaleX:0,duration:1,ease:'power3.inOut'},'-=.5')
-    .from('.dim span,.meta',{opacity:0,duration:.6},'-=.4');
-  gsap.to('.hero h1',{scale:1.5,yPercent:-20,opacity:0,ease:'none',
-    scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
+  gsap.timeline().from('.hero h1 b',{yPercent:110,duration:1.1,stagger:.08,ease:'power4.out'})
+    .from('.dim i',{scaleX:0,duration:1,ease:'power3.inOut'},'-=.5').from('.dim span',{opacity:0,duration:.6},'-=.4');
+  gsap.to('.hero h1',{scale:1.5,yPercent:-20,opacity:0,ease:'none',scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:true}});
 
-  // Parallax inside project images
-  document.querySelectorAll('.media i').forEach(i=>gsap.fromTo(i,{yPercent:-6},{yPercent:6,ease:'none',
-    scrollTrigger:{trigger:i.parentNode,scrub:true}}));
+  // Word-by-word text reveals
+  $$('.rv').forEach(el=>{
+    el.innerHTML=el.textContent.split(' ').map(w=>`<span class="w"><i>${w}</i></span>`).join(' ');
+    gsap.from(el.querySelectorAll('i'),{yPercent:110,duration:.9,stagger:.04,ease:'power3.out',scrollTrigger:{trigger:el,start:'top 88%'}});
+  });
+
+  // Foldable: closed -> opens top to bottom -> three projects glide through -> folds shut on a call
+  // TUNING: HOLD = scroll length per project. PACE = scroll distance per unit (higher = slower). Glide speed: the 1.2 in show().
+  const HOLD=1.45,UNFOLD=1.2,FOLD=1.2,PACE=touch?75:45;
+  const T=$('.T'),ph=$('.phone'),pl=$$('.pl'),pi=$$('.pi'),im=pi.map(e=>e.querySelector('i')),dots=$$('.dot');
+  const on={width:26,backgroundColor:'#fff'},off={width:8,backgroundColor:'rgba(255,255,255,.4)'};
+  const tEnd=UNFOLD+3*HOLD,callAt=tEnd+FOLD*.9,total=callAt+.6;
+  gsap.set(T,{rotateX:-180});gsap.set(ph,{yPercent:-25,scale:.9,'--bt':0});gsap.set(dots[0],on);
+  [1,2].forEach(k=>gsap.set([pl[k],pi[k]],{yPercent:100,visibility:'visible'}));
+  gsap.set(pl,{opacity:k=>k?0:1});gsap.set(im,{scale:1.25,yPercent:k=>k?-10:0});
+
+  // Project changes play on their own clock, so they stay smooth however fast or slow you scroll
+  let cur=0;
+  const show=n=>{
+    if(n===cur)return;cur=n;
+    pi.forEach((_,k)=>{
+      const y=k<n?-100:k>n?100:0,E='expo.inOut',D=1.2;
+      gsap.to(pi[k],{yPercent:y,duration:D,ease:E,overwrite:'auto'});
+      gsap.to(pl[k],{yPercent:y,opacity:k===n?1:0,duration:D,delay:.08,ease:E,overwrite:'auto'});  // text trails the image slightly
+      gsap.to(im[k],{yPercent:k<n?10:k>n?-10:0,duration:D,ease:E,overwrite:'auto'});            // image drifts against its panel for depth
+      gsap.to(dots[k],{...(k===n?on:off),duration:.6,ease:'power3.out',overwrite:'auto'});
+    });
+    reveal(n);
+  };
+  // each project's image settles from a slight zoom, then dissolves to its second photo
+  const reveal=n=>{
+    gsap.fromTo(im[n],{scale:1.25},{scale:1,duration:2.6,ease:'power2.out',overwrite:'auto'});
+    gsap.fromTo(im[n],{'--s':0},{'--s':1,duration:1.6,delay:1.5,ease:'power1.inOut',overwrite:'auto'});
+  };
+  let first=false;
+
+  const tl=gsap.timeline({defaults:{ease:'none'},scrollTrigger:{trigger:'.fold',start:'top top',end:'+='+total*PACE+'%',pin:true,anticipatePin:1,scrub:1,
+    onUpdate:s=>{const t=s.progress*total;if(!first&&t>UNFOLD*.6){first=true;reveal(0)}show(Math.max(0,Math.min(2,Math.floor((t-UNFOLD)/HOLD))))}}});
+  tl.to(T,{rotateX:0,duration:UNFOLD,ease:'power2.inOut'},0).to(ph,{yPercent:0,scale:1,duration:UNFOLD,ease:'power2.inOut'},0)
+    .to(ph,{'--bt':1,duration:UNFOLD*.8,ease:'power1.in'},UNFOLD*.3)   // side buttons ease in as the screen lifts
+    .to(T,{rotateX:-180,duration:FOLD,ease:'power2.inOut'},tEnd).to(ph,{yPercent:-25,scale:.9,duration:FOLD,ease:'power2.inOut'},tEnd)
+    .to(ph,{'--bt':0,duration:FOLD*.5},tEnd)
+    .to('.lock',{opacity:0,duration:.3},callAt).to('.call',{opacity:1,duration:.3},callAt).set('.call',{pointerEvents:'auto'},callAt)
+    .to({},{duration:.3},callAt+.3);
+  // The phone leans toward the pointer
+  const tilt=$('.tilt'),tY=gsap.quickTo(tilt,'rotationY',{duration:.8}),tX=gsap.quickTo(tilt,'rotationX',{duration:.8});
+  addEventListener('pointermove',e=>{tY((e.clientX/innerWidth-.5)*16);tX(-(e.clientY/innerHeight-.5)*10)});
 
   // Pinned horizontal scroll for the process
-  const tr=document.querySelector('.track');
-  gsap.to(tr,{x:()=>-(tr.scrollWidth-innerWidth),ease:'none',
-    scrollTrigger:{trigger:'.process',pin:true,scrub:1,invalidateOnRefresh:true,end:()=>'+='+(tr.scrollWidth-innerWidth)}});
+  const tr=$('.track');
+  gsap.to(tr,{x:()=>-(tr.scrollWidth-innerWidth),ease:'none',scrollTrigger:{trigger:'.process',pin:true,anticipatePin:1,scrub:1,invalidateOnRefresh:true,end:()=>'+='+(tr.scrollWidth-innerWidth)}});
 
-  // Cursor ring
-  const ring=document.querySelector('.ring'),mx=gsap.quickTo(ring,'x',{duration:.4}),my=gsap.quickTo(ring,'y',{duration:.4});
+  // The blue glow drifts down the page so the whole site reads as one surface
+  gsap.to('.glow',{yPercent:-22,scale:1.25,ease:'none',scrollTrigger:{trigger:document.body,start:'top top',end:'bottom bottom',scrub:true}});
+
+  // Cursor
+  const ring=$('.ring'),mx=gsap.quickTo(ring,'x',{duration:.4}),my=gsap.quickTo(ring,'y',{duration:.4});
   addEventListener('pointermove',e=>{mx(e.clientX);my(e.clientY)});
-  document.querySelectorAll('a,model-viewer').forEach(el=>{
-    el.addEventListener('pointerenter',()=>gsap.to(ring,{scale:1.8,duration:.3}));
-    el.addEventListener('pointerleave',()=>gsap.to(ring,{scale:1,duration:.3}))});
+  $$('a,model-viewer').forEach(el=>{el.addEventListener('pointerenter',()=>gsap.to(ring,{scale:1.8,duration:.3}));el.addEventListener('pointerleave',()=>gsap.to(ring,{scale:1,duration:.3}))});
   addEventListener('load',()=>ScrollTrigger.refresh());
 }
 </script>
