@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<script>try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}</script>
 <title>Viroz | Industrial Design Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&display=swap" rel="stylesheet">
 <style>
-:root{--b:#39009e;--w:#fff;--k:#000;--m:rgba(255,255,255,.62)}
+:root{--b:#39009e}
+html[data-theme=dark]{color-scheme:dark;--k:#000;--w:#fff;--m:rgba(255,255,255,.62);--line:rgba(255,255,255,.5)}
+html[data-theme=light]{color-scheme:light;--k:#fff;--w:#000;--m:rgba(0,0,0,.6);--line:rgba(0,0,0,.45)}
+html{background:var(--k)}
+html[data-theme=light] .glow{opacity:.3}
 *{margin:0;padding:0;box-sizing:border-box}
 html.lenis{height:auto}.lenis.lenis-smooth{scroll-behavior:auto!important}
 body{background:var(--k);color:var(--w);font-family:'Bricolage Grotesque',system-ui,sans-serif;overflow-x:hidden;line-height:1.4}
@@ -19,19 +24,29 @@ a{color:inherit;text-decoration:none}
  background:radial-gradient(38% 38% at 72% 28%,var(--b),transparent 70%),radial-gradient(34% 34% at 18% 82%,var(--b),transparent 70%)}
 .grain{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.08;
  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
-nav{position:fixed;inset:0 0 auto;display:flex;justify-content:space-between;padding:1.2rem 2rem;z-index:50;font-weight:500}
-nav div{display:flex;gap:1.6rem}
-.ring{position:fixed;top:0;left:0;width:28px;height:28px;margin:-14px 0 0 -14px;background:var(--b);border:1.5px solid var(--w);border-radius:50%;pointer-events:none;z-index:99}
+nav{position:fixed;inset:0 0 auto;display:flex;justify-content:space-between;padding:1.2rem 2rem;z-index:1001;font-weight:500}
+nav div{display:flex;gap:1.6rem;align-items:center}
+.ring{position:fixed;top:0;left:0;width:28px;height:28px;margin:-14px 0 0 -14px;background:var(--b);border:1.5px solid var(--w);border-radius:50%;pointer-events:none;z-index:1002}
 @media(pointer:coarse){.ring{display:none}}
 .w{display:inline-block;overflow:hidden;vertical-align:top}.w>i{display:inline-block;font-style:normal}
+
+/* Theme toggle + ink overlay (ink-bleed-theme-changer) */
+.theme-toggle{position:relative;z-index:1001;display:grid;place-items:center;width:38px;height:38px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--k);color:var(--w);cursor:pointer;transition:transform .25s cubic-bezier(.22,1,.36,1);touch-action:manipulation;-webkit-tap-highlight-color:transparent;flex-shrink:0}
+.theme-toggle:hover{transform:rotate(-12deg) scale(1.04)}
+.theme-toggle:active{transform:scale(.94)}
+.theme-toggle__icon{overflow:visible}.theme-toggle__body{fill:currentColor}
+.theme-toggle__rays{stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+.ink-canvas{position:fixed;inset:0;z-index:1000;width:100%;height:100%;pointer-events:none;visibility:hidden}
+.ink-canvas.is-active{visibility:visible}
+html.theme-fade,html.theme-fade *,html.theme-fade *::before,html.theme-fade *::after{transition:background-color var(--theme-fade,.45s) ease,border-color var(--theme-fade,.45s) ease,color var(--theme-fade,.45s) ease,fill var(--theme-fade,.45s) ease,stroke var(--theme-fade,.45s) ease,box-shadow var(--theme-fade,.45s) ease!important}
 
 /* Hero */
 .hero{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding:6rem 2rem 2.5rem;overflow:hidden}
 .hero h1{font-size:clamp(4.5rem,25vw,28rem);font-weight:800;letter-spacing:-.055em;line-height:.82;display:flex;transform-origin:left bottom;font-variation-settings:'opsz' 96}
 .hero h1 span{display:inline-block;overflow:hidden;padding-bottom:.08em}
 .hero h1 b{display:inline-block;font-weight:inherit}
-.dim{display:flex;align-items:center;gap:1rem;height:.9rem;border-inline:1px solid #fff8;margin:1.5rem 0 1rem;font-weight:500}
-.dim i{flex:1;height:1px;background:#fff8;transform-origin:left}
+.dim{display:flex;align-items:center;gap:1rem;height:.9rem;border-inline:1px solid var(--line);margin:1.5rem 0 1rem;font-weight:500}
+.dim i{flex:1;height:1px;background:var(--line);transform-origin:left}
 .meta{max-width:34ch;color:var(--m)}
 h2{font-size:clamp(2rem,5vw,4.5rem);font-weight:700;letter-spacing:-.03em;line-height:1}
 
@@ -40,7 +55,7 @@ h2{font-size:clamp(2rem,5vw,4.5rem);font-weight:700;letter-spacing:-.03em;line-h
 .fold h2{position:absolute;top:9vh;left:2rem;z-index:7}
 .stage{position:relative;z-index:5;perspective:2000px;display:grid;place-items:center}
 .tilt,.phone{transform-style:preserve-3d}
-.phone{position:relative;width:min(80vw,360px);height:min(70vh,720px);height:min(70svh,720px)}
+.phone{color:#fff;position:relative;width:min(80vw,360px);height:min(70vh,720px);height:min(70svh,720px)}
 .phone::before,.phone::after{content:"";position:absolute;right:-13px;width:4px;background:#2a2a2a;border-radius:2px;opacity:var(--bt,0);transform:translateX(calc((1 - var(--bt,0)) * -9px))}
 @media(prefers-reduced-motion:reduce){.phone{--bt:1}}
 .phone::before{top:26%;height:64px}.phone::after{top:40%;height:34px}
@@ -57,7 +72,7 @@ h2{font-size:clamp(2rem,5vw,4.5rem);font-weight:700;letter-spacing:-.03em;line-h
 .bat::after{content:"";position:absolute;inset:1.5px 5px 1.5px 1.5px;background:#fff;border-radius:1px}
 .lock,.call{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.5rem;padding:1rem;text-align:center}
 .lock b{font-size:clamp(3rem,16vw,5rem);font-weight:800;letter-spacing:-.05em;line-height:1}
-.lock p,.call p{color:var(--m)}
+.lock p,.call p{color:rgba(255,255,255,.62)}
 .call{opacity:0;pointer-events:none}
 .call h3{font-size:2.2rem;letter-spacing:-.03em}
 .call a{margin-top:.8rem;background:var(--b);padding:.7rem 2rem;border-radius:99px;font-weight:600}
@@ -94,8 +109,14 @@ footer p{margin-top:2rem;color:var(--m)}
 </style>
 </head>
 <body>
-<div class="glow"></div><div class="grain"></div><div class="ring"></div>
-<nav><a href="#top">Viroz</a><div><a href="#work">Work</a><a href="#process">Process</a><a href="#viewer">3D</a><a href="#contact">Contact</a></div></nav>
+<div class="glow"></div><div class="grain" data-html2canvas-ignore></div><div class="ring" data-html2canvas-ignore></div>
+<nav data-html2canvas-ignore><a href="#top">Viroz</a><div><a href="#work">Work</a><a href="#process">Process</a><a href="#viewer">3D</a><a href="#contact">Contact</a>
+  <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="true" title="Toggle dark mode (ink bleed)" data-ink-live>
+    <svg class="theme-toggle__icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+      <path class="theme-toggle__body" d="M12 7a5 5 0 1 1 0 10a5 5 0 1 1 0-10z"/>
+      <g class="theme-toggle__rays"><line x1="12" y1="1.5" x2="12" y2="3.5"/><line x1="12" y1="20.5" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="3.5" y2="12"/><line x1="20.5" y1="12" x2="22.5" y2="12"/><line x1="4.58" y1="4.58" x2="6" y2="6"/><line x1="18" y1="18" x2="19.42" y2="19.42"/><line x1="4.58" y1="19.42" x2="6" y2="18"/><line x1="18" y1="6" x2="19.42" y2="4.58"/></g>
+    </svg>
+  </button></div></nav>
 
 <header class="hero" id="top">
   <h1>Viroz</h1>
@@ -162,6 +183,9 @@ footer p{margin-top:2rem;color:var(--m)}
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 <script>
+// The ink effect only spreads where its page snapshot is accurate; elsewhere the theme cross-fades.
+window.__inkOk=()=>{const out=el=>{const r=(el.closest('.pin-spacer')||el).getBoundingClientRect();return r.bottom<=0||r.top>=innerHeight-60};
+  return (scrollY<8||out(document.querySelector('.hero')))&&out(document.querySelector('.fold'))&&out(document.querySelector('.process'))};
 if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
   const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
   gsap.registerPlugin(ScrollTrigger);
@@ -250,5 +274,6 @@ if(!matchMedia('(prefers-reduced-motion:reduce)').matches){
   addEventListener('load',()=>ScrollTrigger.refresh());
 }
 </script>
+<script type="module" src="ink-theme.js"></script>
 </body>
 </html>
